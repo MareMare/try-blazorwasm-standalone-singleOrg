@@ -1,0 +1,1 @@
+# try-blazorwasm-standalone-singleOrg
