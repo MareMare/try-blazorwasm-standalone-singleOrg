@@ -66,3 +66,18 @@ There was an error trying to log you in: 'Cannot read properties of undefined (r
     ここで断念。
 
 ### Cloudflare Pages
+![](assets/cloudflare-pages-config.png)
+
+* ビルドの構成
+  * ビルドコマンド
+    ```sh
+    curl -sSL https://dot.net/v1/dotnet-install.sh > dotnet-install.sh;
+    chmod +x dotnet-install.sh;
+    ./dotnet-install.sh -c 6.0 -InstallDir ./dotnet6;
+    ./dotnet6/dotnet --version;
+    ./dotnet6/dotnet publish "src/blazorwasm-standalone-singleOrg" -c Release -o output;
+    ```
+  * ビルド出力ディレクトリ
+    ```sh
+    /output/wwwroot
+    ```
