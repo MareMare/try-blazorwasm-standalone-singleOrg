@@ -66,6 +66,8 @@ There was an error trying to log you in: 'Cannot read properties of undefined (r
     ここで断念。
 
 ### Cloudflare Pages
+[Deploy a Blazor Site · Cloudflare Pages docs](https://developers.cloudflare.com/pages/framework-guides/deploy-a-blazor-site/#creating-the-build-script)
+
 ![](assets/cloudflare-pages-config.png)
 
 * ビルドの構成
