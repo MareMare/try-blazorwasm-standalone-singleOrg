@@ -75,9 +75,9 @@ There was an error trying to log you in: 'Cannot read properties of undefined (r
     ```sh
     curl -sSL https://dot.net/v1/dotnet-install.sh > dotnet-install.sh;
     chmod +x dotnet-install.sh;
-    ./dotnet-install.sh -c 6.0 -InstallDir ./dotnet6;
-    ./dotnet6/dotnet --version;
-    ./dotnet6/dotnet publish "src/blazorwasm-standalone-singleOrg" -c Release -o output;
+    ./dotnet-install.sh -c 7.0 -InstallDir ./dotnet7;
+    ./dotnet7/dotnet --version;
+    ./dotnet7/dotnet publish "src/blazorwasm-standalone-singleOrg" -c Release -o output;
     ```
   * ビルド出力ディレクトリ
     ```sh
