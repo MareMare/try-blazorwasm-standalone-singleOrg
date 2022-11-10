@@ -6,7 +6,7 @@
 | [![Azure Static Web Apps CI/CD](https://github.com/MareMare/try-blazorwasm-standalone-singleOrg/actions/workflows/azure-static-web-apps-polite-moss-0d2a72510.yml/badge.svg?branch=main)](https://github.com/MareMare/try-blazorwasm-standalone-singleOrg/actions/workflows/azure-static-web-apps-polite-moss-0d2a72510.yml) | https://polite-moss-0d2a72510.2.azurestaticapps.net |
 | ![Cloudflare](https://img.shields.io/badge/Cloudflare-F38020?style=for-the-badge&logo=Cloudflare&logoColor=white) | https://try-blazorwasm-standalone-singleorg.pages.dev <br> https://wasm3.trypage.tk |
 
-## 'Cannot read properties of undefined (reading 'toLowerCase')'
+## `'Cannot read properties of undefined (reading 'toLowerCase')'`
 
 GitHub Pages あるいは Azure Static Web Apps へ発行し、実際にサイトへアクセスすると次のエラーが表示される。
 ```
@@ -20,7 +20,25 @@ There was an error trying to log you in: 'Cannot read properties of undefined (r
 </ItemGroup>
 ```
 
-詳細は https://github.com/dotnet/aspnetcore/issues/38082#issuecomment-1072762015 。
+詳細は以下：
+* https://github.com/dotnet/aspnetcore/issues/38082#issuecomment-1072762015
+
+## `'"undefined" is not valid JSON'`
+デプロイしたサイトへアクセスすると次のエラーが表示される。
+```
+There was an error trying to log you in: '"undefined" is not valid JSON'
+```
+
+対処方法は *.csproj に以下を追加すれば良いらしい。
+```xml
+<ItemGroup>
+  <TrimmerRootAssembly Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" />
+</ItemGroup>
+```
+
+詳細は以下：
+* https://github.com/dotnet/aspnetcore/issues/44981#issue-1442616167
+* https://github.com/dotnet/aspnetcore/issues/43293#issuecomment-1306046181
 
 ## リダイレクトの設定
 ![](assets/AAD-redirect-setting.png)
