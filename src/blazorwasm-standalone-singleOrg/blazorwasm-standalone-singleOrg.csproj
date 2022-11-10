@@ -22,8 +22,22 @@
     
     対処方法は次を *.csproj へ追加
     <TrimmerRootAssembly Include="Microsoft.Authentication.WebAssembly.Msal" />
+
+    cf.https://github.com/dotnet/aspnetcore/issues/38082#issuecomment-1072762015
     -->
     <TrimmerRootAssembly Include="Microsoft.Authentication.WebAssembly.Msal" />
+
+    <!--
+    デプロイした後サイトへアクセスすると次のエラーが表示される。
+    There was an error trying to log you in: '"undefined" is not valid JSON'
+    
+    対処方法は次を *.csproj へ追加
+    <TrimmerRootAssembly Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" />
+
+    cf.https://github.com/dotnet/aspnetcore/issues/44981#issue-1442616167
+    cf.https://github.com/dotnet/aspnetcore/issues/43293#issuecomment-1306046181
+    -->
+    <TrimmerRootAssembly Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" />
   </ItemGroup>
 
 </Project>
