@@ -18,8 +18,8 @@ env:
   DOTNET_CORE_VERSION: 7.0.x
   WORKING_DIRECTORY: src/blazorwasm-standalone-singleOrg
   # TESTING_DIRECTORY: src
-  # GHPAGES_BASE: "/try-blazorwasm-standalone-singleOrg/"
-  GHPAGES_BASE: "/"
+  GHPAGES_BASE: "/try-blazorwasm-standalone-singleOrg/"
+  # GHPAGES_BASE: "/"
 
 jobs:
   deploy:
