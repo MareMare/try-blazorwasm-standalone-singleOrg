@@ -41,7 +41,13 @@ There was an error trying to log you in: '"undefined" is not valid JSON'
 * https://github.com/dotnet/aspnetcore/issues/43293#issuecomment-1306046181
 
 ## リダイレクトの設定
+
+<details>
+<summary>詳細：</summary>
+
 ![](assets/AAD-redirect-setting.png)
+
+</details>
 
 ## クライアントシークレットの設定
 ユーザシークレットには以下のキーでクライアントシークレットを設定しているので、発行先の環境変数へ追加する必要がある。
@@ -51,9 +57,19 @@ There was an error trying to log you in: '"undefined" is not valid JSON'
 }
 ```
 ### GitHub Pages
+
+<details>
+<summary>詳細：</summary>
+
 ![](assets/gh-pages-environment-secrets.png)
 
+</details>
+
 ### Azure Static Web Apps
+
+<details>
+<summary>無料版ではダメだった：</summary>
+
 ![](assets/static-web-app-configuration.png)
 
 ![](assets/AADSTS900043.png)
@@ -83,10 +99,17 @@ There was an error trying to log you in: '"undefined" is not valid JSON'
     やりたいことは「カスタム認証」が適している。が、しかし無料が良かった…
     ここで断念。
 
+</details>
+
 ### Cloudflare Pages
 [Deploy a Blazor Site · Cloudflare Pages docs](https://developers.cloudflare.com/pages/framework-guides/deploy-a-blazor-site/#creating-the-build-script)
 
+<details>
+<summary>詳細：</summary>
+
 ![](assets/cloudflare-pages-config.png)
+
+</details>
 
 * ビルドの構成
   * ビルドコマンド
@@ -101,3 +124,11 @@ There was an error trying to log you in: '"undefined" is not valid JSON'
     ```sh
     /output/wwwroot
     ```
+## `Microsoft.Graph v4 to v5`
+Microsoft.Graph Version="4.54.0" → Microsoft.Graph Version="5.1.0" は破壊的変更がある模様。
+
+以下が参考になりそう：
+* [Microsoft Graph \.NET SDK v5 changelog and upgrade guide](https://github.com/microsoftgraph/msgraph-sdk-dotnet/blob/feature/5.0/docs/upgrade-to-v5.md)
+* [Upgrade 4\.50 sdk to 5\.0 \- Reference to type IAuthenticationProvider claims it is defined in Microsoft\.Graph\.Core, but cannot be found · Issue \#1695 · microsoftgraph/msgraph\-sdk\-dotnet](https://github.com/microsoftgraph/msgraph-sdk-dotnet/issues/1695)
+  * https://github.com/microsoftgraph/msgraph-sdk-dotnet/issues/1695#issuecomment-1464520102
+* https://github.com/AzureAD/microsoft-identity-web/issues/2097
