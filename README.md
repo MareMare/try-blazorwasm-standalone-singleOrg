@@ -127,8 +127,15 @@ There was an error trying to log you in: '"undefined" is not valid JSON'
 ## `Microsoft.Graph v4 to v5`
 Microsoft.Graph Version="4.54.0" → Microsoft.Graph Version="5.1.0" は破壊的変更がある模様。
 
-以下が参考になりそう：
+### 以下が参考になりそう：
 * [Microsoft Graph \.NET SDK v5 changelog and upgrade guide](https://github.com/microsoftgraph/msgraph-sdk-dotnet/blob/feature/5.0/docs/upgrade-to-v5.md)
 * [Upgrade 4\.50 sdk to 5\.0 \- Reference to type IAuthenticationProvider claims it is defined in Microsoft\.Graph\.Core, but cannot be found · Issue \#1695 · microsoftgraph/msgraph\-sdk\-dotnet](https://github.com/microsoftgraph/msgraph-sdk-dotnet/issues/1695)
   * https://github.com/microsoftgraph/msgraph-sdk-dotnet/issues/1695#issuecomment-1464520102
 * https://github.com/AzureAD/microsoft-identity-web/issues/2097
+* https://github.com/microsoftgraph/msgraph-sample-aspnet-core/issues/84
+
+### 一時的な解決方法？：
+* https://github.com/AzureAD/microsoft-identity-web/issues/2097#issuecomment-1451707046
+  * https://gist.github.com/ashelopukho/5b00944c7744ebb4f9baa348e86f7e0e
+* https://github.com/microsoftgraph/msgraph-sdk-dotnet/issues/1695#issuecomment-1461759018
+  * https://github.com/svrooij/BlazorGraphExplorer/commit/ab989ff959883f43e7ead10ff4e3c506022dbf33
