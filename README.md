@@ -140,3 +140,36 @@ Microsoft.Graph Version="4.54.0" → Microsoft.Graph Version="5.1.0" は破壊�
   * https://gist.github.com/ashelopukho/5b00944c7744ebb4f9baa348e86f7e0e
 * https://github.com/microsoftgraph/msgraph-sdk-dotnet/issues/1695#issuecomment-1461759018
   * https://github.com/svrooij/BlazorGraphExplorer/commit/ab989ff959883f43e7ead10ff4e3c506022dbf33
+
+## Breaking changes Authentication in WebAssembly apps
+![image](https://user-images.githubusercontent.com/807378/226430419-706da0c0-3dd9-42c1-b12d-63cd50378182.png)
+* https://github.com/dotnet/aspnetcore/issues/44973
+  * https://github.com/dotnet/AspNetCore.Docs/pull/27562
+  * https://github.com/dotnet/AspNetCore.Docs/blob/cfc5e4436eaeb090d3bfe55445285952aad7f07e/aspnetcore/blazor/security/includes/redirecttologin-component.md
+  * https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/7.0/wasm-app-authentication
+
+```cs
+@inject NavigationManager Navigation
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@code {
+    protected override void OnInitialized()
+    {
+        Navigation.NavigateTo(
+            $"authentication/login?returnUrl={Uri.EscapeDataString(Navigation.Uri)}");
+    }
+}
+```
+↓
+```cs
+@inject NavigationManager Navigation
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Microsoft.Extensions.Options
+
+@inject IOptionsSnapshot<RemoteAuthenticationOptions<ApiAuthorizationProviderOptions>> Options
+@code {
+    protected override void OnInitialized()
+    {
+        Navigation.NavigateToLogin(Options.Get(Microsoft.Extensions.Options.Options.DefaultName).AuthenticationPaths.LogInPath);
+    }
+}
+```
