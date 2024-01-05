@@ -2,9 +2,9 @@
 
 | Status | Site URL |
 |--|--|
-| [![Deploy to GitHub Pages](https://github.com/MareMare/try-blazorwasm-standalone-singleOrg/actions/workflows/cd-ghpages.yml/badge.svg?branch=main)](https://github.com/MareMare/try-blazorwasm-standalone-singleOrg/actions/workflows/cd-ghpages.yml) | https://maremare.github.io/try-blazorwasm-standalone-singleOrg <br> https://wasm.trypage.tk |
+| [![Deploy to GitHub Pages](https://github.com/MareMare/try-blazorwasm-standalone-singleOrg/actions/workflows/cd-ghpages.yml/badge.svg?branch=main)](https://github.com/MareMare/try-blazorwasm-standalone-singleOrg/actions/workflows/cd-ghpages.yml) | https://maremare.github.io/try-blazorwasm-standalone-singleOrg |
 | [![Azure Static Web Apps CI/CD](https://github.com/MareMare/try-blazorwasm-standalone-singleOrg/actions/workflows/azure-static-web-apps-polite-moss-0d2a72510.yml/badge.svg?branch=main)](https://github.com/MareMare/try-blazorwasm-standalone-singleOrg/actions/workflows/azure-static-web-apps-polite-moss-0d2a72510.yml) | https://polite-moss-0d2a72510.2.azurestaticapps.net |
-| ![Cloudflare](https://img.shields.io/badge/Cloudflare-F38020?style=for-the-badge&logo=Cloudflare&logoColor=white) | https://try-blazorwasm-standalone-singleorg.pages.dev <br> https://wasm3.trypage.tk |
+| ![Cloudflare](https://img.shields.io/badge/Cloudflare-F38020?style=for-the-badge&logo=Cloudflare&logoColor=white) | https://try-blazorwasm-standalone-singleorg.pages.dev |
 
 ## `'Cannot read properties of undefined (reading 'toLowerCase')'`
 
@@ -116,9 +116,9 @@ There was an error trying to log you in: '"undefined" is not valid JSON'
     ```sh
     curl -sSL https://dot.net/v1/dotnet-install.sh > dotnet-install.sh;
     chmod +x dotnet-install.sh;
-    ./dotnet-install.sh -c 7.0 -InstallDir ./dotnet7;
-    ./dotnet7/dotnet --version;
-    ./dotnet7/dotnet publish "src/blazorwasm-standalone-singleOrg" -c Release -o output;
+    ./dotnet-install.sh -c 8.0 -InstallDir ./dotnet8;
+    ./dotnet8/dotnet --version;
+    ./dotnet8/dotnet publish "src/blazorwasm-standalone-singleOrg" -c Release -o output;
     ```
   * ビルド出力ディレクトリ
     ```sh
@@ -136,12 +136,126 @@ Microsoft.Graph Version="4.54.0" → Microsoft.Graph Version="5.1.0" は破壊�
 * https://github.com/microsoftgraph/msgraph-sample-aspnet-core/issues/84
 
 ### 一時的な解決方法？：
+<details><summary>参考：</summary>
+
 * https://github.com/AzureAD/microsoft-identity-web/issues/2097#issuecomment-1451707046
   * https://gist.github.com/ashelopukho/5b00944c7744ebb4f9baa348e86f7e0e
 * https://github.com/microsoftgraph/msgraph-sdk-dotnet/issues/1695#issuecomment-1461759018
   * https://github.com/svrooij/BlazorGraphExplorer/commit/ab989ff959883f43e7ead10ff4e3c506022dbf33
 
+</details>
+
+### 解決方法:
+* [ASP\.NET Core Blazor WebAssembly で Graph API を使用する \| Microsoft Learn](https://learn.microsoft.com/ja-jp/aspnet/core/blazor/security/webassembly/graph-api?view=aspnetcore-8.0&pivots=graph-sdk-5)
+
+<details><summary>GraphClientExtensions.cs:</summary>
+
+```cs
+using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+using Microsoft.Authentication.WebAssembly.Msal.Models;
+using Microsoft.Graph;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.Kiota.Abstractions;
+using Microsoft.Kiota.Abstractions.Authentication;
+using IAccessTokenProvider = Microsoft.AspNetCore.Components.WebAssembly.Authentication.IAccessTokenProvider;
+
+/// <summary>
+/// Adds services and implements methods to use Microsoft Graph SDK.
+/// </summary>
+internal static class GraphClientExtensions
+{
+    public static IServiceCollection AddGraphClient(this IServiceCollection services, string? baseUrl, List<string>? scopes)
+    {
+        if (string.IsNullOrEmpty(baseUrl) || scopes.IsNullOrEmpty())
+        {
+            return services;
+        }
+
+        services.Configure<RemoteAuthenticationOptions<MsalProviderOptions>>(
+            options =>
+            {
+                scopes?.ForEach(scope =>
+                {
+                    options.ProviderOptions.DefaultAccessTokenScopes.Add(scope);
+                });
+            });
+
+        services.AddScoped<IAuthenticationProvider, GraphAuthenticationProvider>();
+
+        services.AddScoped(
+            sp =>
+                new GraphServiceClient(
+                    new HttpClient(),
+                    sp.GetRequiredService<IAuthenticationProvider>(),
+                    baseUrl));
+
+        return services;
+    }
+
+    /// <summary>
+    /// Implements IAuthenticationProvider interface.
+    /// Tries to get an access token for Microsoft Graph.
+    /// </summary>
+    private class GraphAuthenticationProvider : IAuthenticationProvider
+    {
+        private readonly IConfiguration _config;
+
+        public GraphAuthenticationProvider(IAccessTokenProvider tokenProvider, IConfiguration config)
+        {
+            this.TokenProvider = tokenProvider;
+            this._config = config;
+        }
+
+        public IAccessTokenProvider TokenProvider { get; }
+
+        public async Task AuthenticateRequestAsync(
+            RequestInformation request,
+            Dictionary<string, object>? additionalAuthenticationContext = null,
+            CancellationToken cancellationToken = default)
+        {
+            var result = await this.TokenProvider.RequestAccessToken(
+                new AccessTokenRequestOptions
+                {
+                    Scopes = this._config.GetSection("MicrosoftGraph:Scopes").Get<string[]>(),
+                });
+
+            if (result.TryGetToken(out var token))
+            {
+                request.Headers.Add("Authorization", $"{CoreConstants.Headers.Bearer} {token.Value}");
+            }
+        }
+    }
+}
+```
+
+</details>
+
+<details><summary>Program.cs:</summary>
+
+```cs
+var baseUrl = builder.Configuration.GetSection("MicrosoftGraph")["BaseUrl"];
+var scopes = builder.Configuration.GetSection("MicrosoftGraph:Scopes").Get<List<string>>();
+builder.Services.AddGraphClient(baseUrl, scopes);
+
+```
+
+</details>
+
+<details><summary>appsettings.json:</summary>
+
+```json
+  "MicrosoftGraph": {
+    "BaseUrl": "https://graph.microsoft.com/v1.0",
+    "Scopes": [ "user.read" ]
+  }
+```
+
+</details>
+
 ## Breaking changes Authentication in WebAssembly apps
+
+<details><summary>詳細:</summary>
+
 ![image](https://user-images.githubusercontent.com/807378/226430419-706da0c0-3dd9-42c1-b12d-63cd50378182.png)
 * https://github.com/dotnet/aspnetcore/issues/44973
   * https://github.com/dotnet/AspNetCore.Docs/pull/27562
@@ -159,7 +273,7 @@ Microsoft.Graph Version="4.54.0" → Microsoft.Graph Version="5.1.0" は破壊�
     }
 }
 ```
-↓
+👇
 ```cs
 @inject NavigationManager Navigation
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
@@ -173,3 +287,5 @@ Microsoft.Graph Version="4.54.0" → Microsoft.Graph Version="5.1.0" は破壊�
     }
 }
 ```
+
+</details>
