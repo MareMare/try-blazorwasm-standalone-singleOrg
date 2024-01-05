@@ -8,13 +8,15 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-builder.Services.AddMicrosoftGraphClient("https://graph.microsoft.com/User.Read");
+var baseUrl = builder.Configuration.GetSection("MicrosoftGraph")["BaseUrl"];
+var scopes = builder.Configuration.GetSection("MicrosoftGraph:Scopes").Get<List<string>>();
+builder.Services.AddGraphClient(baseUrl, scopes);
 
 builder.Services.AddMsalAuthentication(options =>
 {
     builder.Configuration.Bind("AzureAd", options.ProviderOptions.Authentication);
     options.ProviderOptions.DefaultAccessTokenScopes.Add("https://graph.microsoft.com/User.Read");
-    options.ProviderOptions.LoginMode = "redirect"; // Êó¢ÂÆö„ÅØ "popup"
+    options.ProviderOptions.LoginMode = "redirect"; // ä˘íËÇÕ "popup"
 });
 
 await builder.Build().RunAsync();

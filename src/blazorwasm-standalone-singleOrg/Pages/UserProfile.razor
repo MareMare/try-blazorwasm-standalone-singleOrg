@@ -1,6 +1,5 @@
 @page "/profile"
 @using Microsoft.AspNetCore.Authorization
-@using Microsoft.Graph
 @inject Microsoft.Graph.GraphServiceClient GraphServiceClient
 @attribute [Authorize]
 
@@ -30,13 +29,13 @@ else
 }
 
 @code {
-    User? user;
+    private Microsoft.Graph.Models.User? user;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            user = await GraphServiceClient.Me.Request().GetAsync();
+            user = await GraphServiceClient.Me.GetAsync();
         }
         catch (Exception ex)
         {
