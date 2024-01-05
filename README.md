@@ -2,9 +2,9 @@
 
 | Status | Site URL |
 |--|--|
-| [![Deploy to GitHub Pages](https://github.com/MareMare/try-blazorwasm-standalone-singleOrg/actions/workflows/cd-ghpages.yml/badge.svg?branch=main)](https://github.com/MareMare/try-blazorwasm-standalone-singleOrg/actions/workflows/cd-ghpages.yml) | https://maremare.github.io/try-blazorwasm-standalone-singleOrg <br> https://wasm.trypage.tk |
+| [![Deploy to GitHub Pages](https://github.com/MareMare/try-blazorwasm-standalone-singleOrg/actions/workflows/cd-ghpages.yml/badge.svg?branch=main)](https://github.com/MareMare/try-blazorwasm-standalone-singleOrg/actions/workflows/cd-ghpages.yml) | https://maremare.github.io/try-blazorwasm-standalone-singleOrg |
 | [![Azure Static Web Apps CI/CD](https://github.com/MareMare/try-blazorwasm-standalone-singleOrg/actions/workflows/azure-static-web-apps-polite-moss-0d2a72510.yml/badge.svg?branch=main)](https://github.com/MareMare/try-blazorwasm-standalone-singleOrg/actions/workflows/azure-static-web-apps-polite-moss-0d2a72510.yml) | https://polite-moss-0d2a72510.2.azurestaticapps.net |
-| ![Cloudflare](https://img.shields.io/badge/Cloudflare-F38020?style=for-the-badge&logo=Cloudflare&logoColor=white) | https://try-blazorwasm-standalone-singleorg.pages.dev <br> https://wasm3.trypage.tk |
+| ![Cloudflare](https://img.shields.io/badge/Cloudflare-F38020?style=for-the-badge&logo=Cloudflare&logoColor=white) | https://try-blazorwasm-standalone-singleorg.pages.dev |
 
 ## `'Cannot read properties of undefined (reading 'toLowerCase')'`
 
