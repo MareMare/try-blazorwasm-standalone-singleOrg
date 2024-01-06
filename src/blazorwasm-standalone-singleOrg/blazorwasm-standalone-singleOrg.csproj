@@ -7,6 +7,10 @@
     <UserSecretsId>1f700288-402c-4ea9-8b35-a67ca2717c79</UserSecretsId>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <BlazorEnableCompression>true</BlazorEnableCompression>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.0" PrivateAssets="all" />
@@ -14,6 +18,12 @@
     <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
     <PackageReference Include="Microsoft.Graph" Version="5.38.0" />
     <PackageReference Include="PublishSPAforGitHubPages.Build" Version="2.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\js\decode.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
