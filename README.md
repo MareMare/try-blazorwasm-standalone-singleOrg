@@ -120,7 +120,7 @@ There was an error trying to log you in: '"undefined" is not valid JSON'
     ./dotnet8/dotnet --version;
     ./dotnet8/dotnet workload install wasm-tools;
     ./dotnet8/dotnet publish "src/blazorwasm-standalone-singleOrg" -c Release -o output;
-    rm output/wwwroot/_framework/Microsoft.Graph.wasm;
+    rm $(ls output/wwwroot/_framework/*.wasm);
     ```
   * ビルド出力ディレクトリ
     ```sh
