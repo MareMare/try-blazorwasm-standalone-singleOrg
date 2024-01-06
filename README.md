@@ -118,7 +118,9 @@ There was an error trying to log you in: '"undefined" is not valid JSON'
     chmod +x dotnet-install.sh;
     ./dotnet-install.sh -c 8.0 -InstallDir ./dotnet8;
     ./dotnet8/dotnet --version;
+    ./dotnet8/dotnet workload install wasm-tools;
     ./dotnet8/dotnet publish "src/blazorwasm-standalone-singleOrg" -c Release -o output;
+    rm $(ls output/wwwroot/_framework/*.wasm);
     ```
   * ビルド出力ディレクトリ
     ```sh
@@ -289,3 +291,62 @@ builder.Services.AddGraphClient(baseUrl, scopes);
 ```
 
 </details>
+
+## Run Blazor Web Assembly locally
+* [natemcmaster/dotnet\-serve: Simple command\-line HTTPS server for the \.NET Core CLI](https://github.com/natemcmaster/dotnet-serve)
+
+```ps1
+dotnet publish .\src\blazorwasm-standalone-singleOrg\ -c release -o output
+rm output/wwwroot/_framework/Microsoft.Graph.wasm
+dotnet serve -o -S -p:7117 -b -d:.\output\wwwroot
+```
+
+## Brotli Compression
+* [ASP\.NET Core Blazor WebAssembly のホストと展開 \| Microsoft Learn](https://learn.microsoft.com/ja-jp/aspnet/core/blazor/host-and-deploy/webassembly?view=aspnetcore-8.0#compression)
+* `wwwroot\js\decode.js`／`wwwroot\js\decode.min.js`
+  * [google/brotli · GitHub](https://github.com/google/brotli/tree/master/js) から `decode.js` と `decode.min.js` をダウンロード
+  * `wwwroot\js` へコピー
+* `*.csproj`
+  ```xml
+    <PropertyGroup>
+      <BlazorEnableCompression>true</BlazorEnableCompression>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Content Update="wwwroot\js\decode.js">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+  ```
+* `wwwroot\index.html`
+  ```html
+  <body>
+
+      <!-- 👇 ここから -->
+      <!-- NOTE: https://learn.microsoft.com/ja-jp/aspnet/core/blazor/host-and-deploy/webassembly?view=aspnetcore-8.0#compression -->
+      <script src="_framework/blazor.webassembly.js" autostart="false"></script>
+      <script type="module">
+          import { BrotliDecode } from './js/decode.min.js';
+          Blazor.start({
+          loadBootResource: function (type, name, defaultUri, integrity) {
+              if (type !== 'dotnetjs' && location.hostname !== 'localhost' && type !== 'configuration') {
+              return (async function () {
+                  const response = await fetch(defaultUri + '.br', { cache: 'no-cache' });
+                  if (!response.ok) {
+                  throw new Error(response.statusText);
+                  }
+                  const originalResponseBuffer = await response.arrayBuffer();
+                  const originalResponseArray = new Int8Array(originalResponseBuffer);
+                  const decompressedResponseArray = BrotliDecode(originalResponseArray);
+                  const contentType = type === 
+                  'dotnetwasm' ? 'application/wasm' : 'application/octet-stream';
+                  return new Response(decompressedResponseArray, 
+                  { headers: { 'content-type': contentType } });
+              })();
+              }
+          }
+          });
+      </script>
+      <!-- 👆 ここまで -->
+  </body>
+  ```
